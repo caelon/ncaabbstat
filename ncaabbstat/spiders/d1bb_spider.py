@@ -1,4 +1,5 @@
 from scrapy.spider import BaseSpider
+from scrapy.selector import HtmlXPathSelector
 
 class D1BBSpider(BaseSpider):
     name = "D1BB"
@@ -8,5 +9,11 @@ class D1BBSpider(BaseSpider):
     ]
 
     def parse(self, response):
-        filename = response.url.split("/")[-2]
-        open(filename, 'wb').write(response.body)
+        hxs = HtmlXPathSelector(response)
+        sites = hxs.select('//a[contains(., "Box Score")]')
+        for site in sites:
+            #title = site.select('a/text()').extract()
+            link = site.select('@href').extract()
+            desc = site.select('text()').extract()
+#            print title, link, desc
+            print link, desc
