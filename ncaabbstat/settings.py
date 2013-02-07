@@ -10,6 +10,7 @@ BOT_NAME = 'ncaabbstat'
 
 SPIDER_MODULES = ['ncaabbstat.spiders']
 NEWSPIDER_MODULE = 'ncaabbstat.spiders'
+DEFAULT_ITEM_CLASS = 'ncaabbstat.items.NcaabbstatItem'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'ncaabbstat (+http://www.yourdomain.com)'

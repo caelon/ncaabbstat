@@ -8,7 +8,9 @@ from scrapy.item import Item, Field
 class NcaabbstatItem(Item):
     # define the fields for your item here like:
     # name = Field()
-	title = Field()
-	link = Field()
-	desc = Field()
-    pass
+    visitor = Field()
+    home = Field()
+    boxscorelink = Field()
+
+    def __str__(self):
+        return "%s at %s - %s" % (self.get('visitor'), self.get('home'), self.get('boxscorelink'))
