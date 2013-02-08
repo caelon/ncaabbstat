@@ -1,7 +1,7 @@
 from scrapy.spider import BaseSpider
 from scrapy.selector import HtmlXPathSelector
 
-from ncaabbstat.items import NcaabbstatItem
+from ncaabbstat.items import DailylinksItem
 
 class D1BBSpider(BaseSpider):
     name = "D1BB"
@@ -18,7 +18,7 @@ class D1BBSpider(BaseSpider):
 
         for site in sites:
             if site.select('td[3]/a/text()').extract():
-                item = NcaabbstatItem()
+                item = DailylinksItem()
                 visitor = str(site.select('td[3]/a/text()').extract())
                 visitor = visitor[3:]
                 item['visitor'] = visitor[:-2]

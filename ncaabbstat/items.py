@@ -5,7 +5,7 @@
 
 from scrapy.item import Item, Field
 
-class NcaabbstatItem(Item):
+class DailylinksItem(Item):
     # define the fields for your item here like:
     # name = Field()
     visitor = Field()
