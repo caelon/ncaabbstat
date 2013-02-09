@@ -1,7 +1,7 @@
 from scrapy.spider import BaseSpider
 from scrapy.selector import HtmlXPathSelector
 
-from ncaabbstat.items import DailylinksItem, PlayerstatItem
+from ncaabbstat.items import DailylinksItem, BattingstatItem, PitchingstatItem
 
 class D1BBSpider(BaseSpider):
     name = "D1BB"
@@ -46,6 +46,7 @@ class BoxscoreStyle1Spider(BaseSpider):
 
         for line in lines:
             if str(line.select('td[11]').extract()) == "[]":
+                item = BattingstatItem()
                 namepos = str(line.select('td[1]/font/text()').extract())
                 namepos = namepos[3:-6]
                 namepos = namepos.replace("\\xa0","")
@@ -53,7 +54,6 @@ class BoxscoreStyle1Spider(BaseSpider):
                     if namepos[:1] == " ":
                         namepos = namepos[1:]
                     if namepos[:6] != "Totals":
-                        item = PlayerstatItem()
                         if namepos[-1:] == 'p' or namepos[-1:] == 'c':
                             item['position'] = namepos[-1:]
                             item['name'] = namepos[:-2]
@@ -78,10 +78,9 @@ class BoxscoreStyle1Spider(BaseSpider):
                         item['assists'] = int(assists[3:-6])
                         leftonbase = str(line.select('td[10]/font/text()').extract())
                         item['leftonbase'] = int(leftonbase[3:-6])
-                        item['inningsp'] = item['hitsp'] = item['runsp'] = item['earnedrunsp'] = item['walksp'] = item['strikeoutsp'] = item['wildpitchesp'] = item['balksp'] = item['hbp'] = item['ibbp'] = item['atbatsp'] = item['battersfacedp'] = item['flyoutsp'] = item['groundoutsp'] = 0
-#                        print position, name, atbats, hits, runs, rbi, basesonballs, strikeouts, putouts, assists, leftonbase
                         items.append(item)
             elif str(line.select('td[11]').extract()) != "[]":
+                item = PitchingstatItem()
                 namepos = str(line.select('td[1]/font/text()').extract())
                 namepos = namepos[3:-6]
                 namepos = namepos.replace("\\xa0","")
@@ -89,7 +88,6 @@ class BoxscoreStyle1Spider(BaseSpider):
                     if namepos[:1] == " ":
                         namepos = namepos[1:]
                     if namepos[:6] != "Totals":
-                        item = PlayerstatItem()
                         item['position'] = 'p'
                         item['name'] = namepos
                         ips = str(line.select('td[2]/font/text()').extract())
@@ -120,8 +118,6 @@ class BoxscoreStyle1Spider(BaseSpider):
                         item['flyoutsp'] = int(flyoutsp[3:-6])
                         groundoutsp = str(line.select('td[15]/font/text()').extract())
                         item['groundoutsp'] = int(groundoutsp[3:-6])
-                        item['atbats'] = item['hits'] = item['runs'] = item['rbi'] = item['basesonballs'] = item['strikeouts'] = item['putouts'] = item['assists'] = item['leftonbase'] = 0
-#                        print position, name, atbats, hits, runs, rbi, basesonballs, strikeouts, putouts, assists, leftonbase
                         items.append(item)
 
         return items
