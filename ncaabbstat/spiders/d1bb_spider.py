@@ -1,5 +1,6 @@
 from scrapy.spider import BaseSpider
 from scrapy.selector import HtmlXPathSelector
+from operator import itemgetter
 
 from ncaabbstat.items import DailylinksItem, BattingstatItem, PitchingstatItem
 
@@ -119,5 +120,28 @@ class BoxscoreStyle1Spider(BaseSpider):
                         groundoutsp = str(line.select('td[15]/font/text()').extract())
                         item['groundoutsp'] = int(groundoutsp[3:-6])
                         items.append(item)
-
+        combinedstats = str(hxs.select('//table[@width="555"]/tr/td/font/text()').extract())
+        combinedstats = combinedstats.replace("\\r\\n","")
+        combinedstats = combinedstats[3:-2]
+        statcategories = ['E','LOB','2B','3B','HR','HBP','SH','SF','SB','Win','Loss','Save','WP']
+        catstart = {}
+        for statcategory in statcategories:
+            withhyphen = statcategory+' -'
+            catstart[statcategory] = int(combinedstats.find(withhyphen))
+        catstart = sorted(catstart.iteritems(), key=itemgetter(1), reverse=False)
+        catend = {}
+        for (index, elem) in catstart:
+            currentstart = int(elem)
+            if currentstart != 0:
+                catend[previousindex] = int(elem)-1
+            previousindex = index
+        catend[index] = len(combinedstats)
+        statstring = {}
+        for (index, elem) in catstart:
+            currentend = catend[index]
+            statstring[index] = combinedstats[elem:currentend]
+        for (index, elem) in statstring:
+            #parse through character by character
+        print combinedstats, statstring
+        
         return items
